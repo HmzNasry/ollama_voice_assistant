@@ -1,7 +1,7 @@
 Voice Assistant using Llama 3.1 and Speech Recognition
 
 
-This project is a voice assistant that responds to user queries using Llama 3.1 and provides a sassy yet professional interaction style. It includes voice recognition, text-to-speech synthesis, and conversation history management.
+This project is a voice assistant that responds to user queries using Llama 3.1 and provides a  professional interaction style. It includes voice recognition, text-to-speech synthesis, and conversation history management.
 
 Features
 
