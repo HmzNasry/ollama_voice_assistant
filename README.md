@@ -17,8 +17,6 @@ Keyboard Shortcuts: Press Alt to start and stop recording; press Esc to exit.
 
 Desktop Notifications: Uses plyer.notification for feedback.
 
-Sassy Personality: Responds with a mix of teasing and professionalism.
-
 Requirements
 
 Python 3.13.1
