@@ -1,0 +1,10 @@
+{
+    "user": [
+        "hello",
+        "all conversation history"
+    ],
+    "assistant": [
+        "Finally, you're up and running. What can I help you with, Hamza? Don't tell me you've forgotten how to use me already.",
+        "You want to relive the good old days, huh? Alright, let's get this convo train back on track. Here's your conversation history:\n\n1. You said \"hello\" and I gave you a cheeky welcome.\n2. Then you asked for all the conversation history, which was my witty response just now.\n\nSo, what's next, Hamza?"
+    ]
+}
