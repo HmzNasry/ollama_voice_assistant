@@ -1,5 +1,6 @@
 Voice Assistant using Llama 3.1 and Speech Recognition
 
+
 This project is a voice assistant that responds to user queries using Llama 3.1 and provides a sassy yet professional interaction style. It includes voice recognition, text-to-speech synthesis, and conversation history management.
 
 Features
@@ -30,6 +31,15 @@ FFmpeg installed (needed for playing audio responses)
 
 Llama 3.1 installed and accessible via ollama
 
+
+**NOTES**
+
+Make sure you have ollama installed, default model for this is llama3.1, but can be changed from the python file
+
+It is configured to run in the background, press esc to stop it from running, if you cant, go to the task manager and stop pythton, it can also be stopped if you say bye or go away or quit or shut up.
+
+Inside the python code I've added some comments where you can change some of the preferences to however you like, make sure all the files are in the same directory.
+
 Installation
 
 Clone the Repository:
@@ -41,10 +51,6 @@ cd \windows_voice_assistant_ollama
 Install Dependencies:
 
 pip install -r requirements.txt
-
-Setup Environment Variables:
-
-Create a .env file in the project directory (if needed for customization).
 
 Ollama Setup
 
@@ -66,7 +72,11 @@ Running the Assistant
 
 Start the assistant:
 
-python main.py
+python voice_assistant.py
+
+**OR**
+
+Theres a bat file in the same folder that can automatically start the program for you, you can either press win + r and do shell:startup and copy and paste the file in there, or figure out another way to make a hotkey or something to run that python file
 
 Usage:
 
@@ -74,7 +84,7 @@ Press Alt to start/stop voice recording.
 
 Press Esc to exit.
 
-Responses will be spoken aloud and displayed in the terminal.
+Responses will be spoken aloud and partly displayed in notifications.
 
 Notes
 
