@@ -32,7 +32,9 @@ FFmpeg installed (needed for playing audio responses)
 Llama 3.1 installed and accessible via ollama
 
 
-**NOTES**
+***NOTES***
+
+***MAKE SURE TO INSTALL FFMPEG AND PUT THE CORRECT PATH IN THE PYTHON FILE***
 
 Make sure you have ollama installed, default model for this is llama3.1, but can be changed from the python file
 
