@@ -19,7 +19,7 @@ Desktop Notifications: Uses plyer.notification for feedback.
 
 Requirements
 
-Python 3.13.1
+Python 3.13.1 (I Haven't Tested Other Versions)
 
 Required dependencies (install using pip):
 
