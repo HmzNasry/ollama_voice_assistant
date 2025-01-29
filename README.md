@@ -42,43 +42,45 @@ Inside the python code I've added some comments where you can change some of the
 
 Installation
 
-Clone the Repository:
+- Clone the Repository: - 
 
 git clone https://github.com/HmzNasry/windows_voice_assistant_ollama.git
+
+
 cd \windows_voice_assistant_ollama
 
 
-Install Dependencies:
+- Install Dependencies: -
 
 pip install -r requirements.txt
 
 Ollama Setup
 
-Install Ollama:
+- Install Ollama: -
 
 curl -fsSL https://ollama.ai/install.sh | sh
 
-Verify Installation:
+- Verify Installation: -
 
 ollama --version
 
-Run Llama 3.1 in Ollama:
+ - Run Llama 3.1 in Ollama: -
 
 ollama run llama3.1
 
 More Information: Visit https://ollama.ai/docs
 
-Running the Assistant
+Running the Assistant -
 
-Start the assistant:
+- Start the assistant:
 
 python voice_assistant.py
 
 **OR**
 
-Theres a bat file in the same folder that can automatically start the program for you, you can either press win + r and do shell:startup and copy and paste the file in there, or figure out another way to make a hotkey or something to run that python file
+Theres a bat file in the same folder that can automatically start the program for you, you can either press win + r and do shell:startup and copy and paste the file in there, or figure out another way to make a hotkey or something to run that .bat file
 
-Usage:
+- Usage: -
 
 Press Alt to start/stop voice recording.
 
@@ -86,7 +88,7 @@ Press Esc to exit.
 
 Responses will be spoken aloud and partly displayed in notifications.
 
-Notes
+- Notes -
 
 The assistant saves conversation history in conversation_history.json.
 
@@ -94,7 +96,7 @@ Uses ffplay to play response audio (ffmpeg is required).
 
 Requires a working microphone for speech input.
 
-Download Links
+- Download Links -
 
 Python 3.13.1: https://www.python.org/downloads/release/python-3131/
 
