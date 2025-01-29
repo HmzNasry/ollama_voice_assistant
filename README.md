@@ -34,7 +34,7 @@ Llama 3.1 installed and accessible via ollama
 
 ***NOTES***
 
-***MAKE SURE TO INSTALL FFMPEG AND PUT THE CORRECT PATH IN THE PYTHON FILE***
+***MAKE SURE TO INSTALL FFMPEG AND PUT IT IN YOUR SYSTEM'S PATH ENVIRONMENT VARIABLE**
 
 Make sure you have ollama installed, default model for this is llama3.1, but can be changed from the python file
 
