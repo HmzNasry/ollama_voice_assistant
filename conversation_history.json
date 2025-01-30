@@ -1,6 +1,10 @@
 {
-    "user": [
+    "context": [
+        "Your task is to be a helpful voice assistant, keep your answers short and concice."
+    ],
 
+    "user": [
+        
     ],
     "assistant": [
 
