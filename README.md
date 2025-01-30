@@ -5,6 +5,8 @@ This project is a voice assistant that responds to user queries using Llama 3.1 
 
 Video Demonstration: Coming Soon...
 
+***README UPDATES ARE UNDERWAY...CURENT VERSION IS OUTDATED, STAY TUNED***
+
 
 Features
 
