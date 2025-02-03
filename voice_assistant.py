@@ -124,6 +124,7 @@ def send_notification(title, message):
     truncated_message = message[:256]
     notification.notify(title=title, message=truncated_message, app_name="Voice Assistant", timeout=1)
     print(f"Notification sent: {title}")
+send_notification("Voice Assistant", "Voice assistant has loaded and is ready, press alt to sart/stop recording")
 
 def remove_emojis_and_symbols(text):
     cleaned_text = re.sub(r'[^\w\s,.!?]', '', text)
