@@ -102,8 +102,10 @@ def trim_conversation_to_limit(history):
 
 def update_conversation_history(user_input, assistant_response):
     history = load_conversation_history()
-    history["user"].append(f"{dt}: {user_input}")
-    history["assistant"].append(f"{dt}: {assistant_response}")
+    timestamp = dt.strftime("%Y-%m-%d %H:%M:%S")  
+
+    history["user"].append(f"{timestamp}: {user_input}")  
+    history["assistant"].append(f"{timestamp}: {assistant_response}")  
 
     trimmed_history = trim_conversation_to_limit(history)
     save_conversation_history(trimmed_history)
