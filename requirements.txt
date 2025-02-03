@@ -1,0 +1,7 @@
+speechrecognition
+plyer
+langdetect
+edge-tts
+llm-axe
+ollama
+keyboard
