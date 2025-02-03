@@ -1,4 +1,4 @@
-# 🎤 AI Voice Assistant
+# 🤖 AI Voice Assistant
 
 A **local voice assistant** powered by **Ollama (Llama 3.1)** for **smart, chatty, and interactive conversations**.  
 It **remembers previous conversations**, has a **sassy personality**, and **supports multiple languages**.
@@ -17,7 +17,7 @@ It **remembers previous conversations**, has a **sassy personality**, and **supp
 
 ## 🔧 Installation Guide
 
-### **1️⃣ Install Dependencies**
+### **1️. Install Dependencies**
 Run the following command to install all required **Python libraries**:
 
 ```sh
@@ -32,7 +32,7 @@ pip install speechrecognition plyer langdetect edge-tts llm-axe ollama keyboard
 
 ---
 
-### **2️⃣ Install `ffmpeg` (Required for Audio)**
+### **2️. Install `ffmpeg` (Required for Audio)**
 🇽 **Windows**:
 1. Download `ffmpeg` from [here](https://www.gyan.dev/ffmpeg/builds/).
 2. Extract the ZIP file to `C:\ffmpeg`.
@@ -96,7 +96,7 @@ response = ollama.chat(model="<CHANGE THIS>", messages=[
 
 ## ▶️ How to Use
 
-### **1️⃣ Start the Assistant**
+### **1️. Start the Assistant**
 Run the script using:
 
 ```sh
@@ -109,14 +109,14 @@ Or use the **background mode**:
 va.bat
 ```
 
-### **2️⃣ Interacting with the Assistant**
+### **2️. Interacting with the Assistant**
 - Press **ALT** to start/stop recording.  
 - Speak your **question** or **command**.  
 - The assistant will **respond vocally**.
 - If you want it to search the internet, you have to mention the trigger word 'online' in your response, but it will be ignored when searching the internet, (it wont mess up your prompt)***
 - Press **ESC** to **exit**.
 
-### **3️⃣ Example Commands**
+### **3️. Example Commands**
 | Command | Response |
 |---------|----------|
 | *"What's the weather in Seattle online?"* | *"According to the information from the internet, the weather in seattle is 37 degrees fahrenheit"* |
@@ -125,7 +125,7 @@ va.bat
 
 ---
 
-## 🐟 Understanding the Code
+## 🧠 Understanding the Code
 
 ### **🔹 1. Conversation Memory (`conversation_history.json`)**
 - Stores **past conversations** for **contextual responses**.
@@ -168,6 +168,18 @@ va.bat
   ])
   response_text = response["message"]["content"].strip()
   ```
+### **Online Mode**
+- The **Model** generates a response using the internet through llm_axe's onlineagent:
+```python
+if "online" in query.lower():
+      print("Switching to internet search mode...")
+      llm = OllamaChat(model="my_llama")
+      agent = OnlineAgent(llm)
+      e = query.replace('online', '')
+      search_response = agent.search(e)
+      print("Raw search response:", search_response)
+      response_text = search_response.strip() if isinstance(search_response, str) else "I couldn't find real-time information."
+```
 
 ---
 
