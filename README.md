@@ -69,7 +69,7 @@ Run the following command to download **Llama 3.1**:
 ollama pull llama3.1
 ```
 
-### **3. Starting Local Server
+### **3. Starting Local Server**
 After you have the model installed, run:
 ```
 ollama serve
