@@ -15,9 +15,7 @@ from langdetect import detect
 from datetime import datetime
 import keyboard
 
-dt = datetime.now()
 HISTORY_FILE = "conversation_history.json"
-TOKEN_LIMIT = 2048
 
 startupinfo = subprocess.STARTUPINFO()
 startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
@@ -57,9 +55,9 @@ def load_conversation_history():
                     return data
         except (json.JSONDecodeError, TypeError):
             print("Error loading conversation history, creating new history file.")
-            pass
+
     default_history = {
-        "context": "You are a witty, engaging, and highly intelligent voice assistant. Your personality is a blend of professionalism and charm, capable of handling technical inquiries with expertise while maintaining an engaging and friendly tone. You prioritize user assistance, provide thoughtful responses, and adapt to context while ensuring clarity and accuracy",
+        "context": "Be a sassy and smart voice assistant, use casual words, don't be too formal. Your user's name is Hamza. The user has built a memory system that allows you to refer to previous conversations and timestamps, so you can figure out what time it is and how long it has been since previous conversations. Do not put the timestamp in your response. Keep answers really short, concise, and human-like.",
         "user": [],
         "assistant": []
     }
@@ -71,53 +69,23 @@ def save_conversation_history(history):
         json.dump(history, f, indent=4)
     print("Conversation history saved.")
 
-def count_tokens(text):
-    return len(text.split())
-
-def trim_conversation_to_limit(history):
-    context = history["context"]
-    conversation_history = []
-
-    for user_msg, assistant_msg in zip(history["user"], history["assistant"]):
-        conversation_history.append(f"User: {user_msg}\nVoice Assistant: {assistant_msg}\n")
-
-    full_conversation = context + ''.join(conversation_history)
-    token_count = count_tokens(full_conversation)
-
-    while token_count > TOKEN_LIMIT and len(conversation_history) > 0:
-        removed_turn = conversation_history.pop(0)
-        token_count -= count_tokens(removed_turn)
-        full_conversation = context + ''.join(conversation_history)
-
-    trimmed_user = []
-    trimmed_assistant = []
-    
-    for conv in conversation_history:
-        if conv.startswith("User:"):
-            trimmed_user.append(conv.replace("User: ", "").strip())
-        elif conv.startswith("Voice Assistant:"):
-            trimmed_assistant.append(conv.replace("Voice Assistant: ", "").strip())
-
-    return {"context": context, "user": trimmed_user, "assistant": trimmed_assistant}
-
 def update_conversation_history(user_input, assistant_response):
+    dt = datetime.now()
     history = load_conversation_history()
     timestamp = dt.strftime("%Y-%m-%d %H:%M:%S")  
 
     history["user"].append(f"{timestamp}: {user_input}")  
     history["assistant"].append(f"{timestamp}: {assistant_response}")  
 
-    trimmed_history = trim_conversation_to_limit(history)
-    save_conversation_history(trimmed_history)
+    save_conversation_history(history)
     print(f"Updated conversation history:\nUser: {user_input}\nAssistant: {assistant_response}")
 
 def get_conversation_context():
     history = load_conversation_history()
-    trimmed_history = trim_conversation_to_limit(history)
-    context = trimmed_history["context"]
+    context = history["context"]
     conversation_history = []
 
-    for user_msg, assistant_msg in zip(trimmed_history["user"], trimmed_history["assistant"]):
+    for user_msg, assistant_msg in zip(history["user"], history["assistant"]):
         conversation_history.append(f"User: {user_msg}\nVoice Assistant: {assistant_msg}\n")
 
     return context + ''.join(conversation_history)
@@ -126,7 +94,8 @@ def send_notification(title, message):
     truncated_message = message[:256]
     notification.notify(title=title, message=truncated_message, app_name="Voice Assistant", timeout=1)
     print(f"Notification sent: {title}")
-send_notification("Voice Assistant", "Voice assistant has loaded and is ready, press alt to sart/stop recording")
+
+send_notification("Voice Assistant", "Voice assistant has loaded and is ready, press alt to start/stop recording")
 
 def remove_emojis_and_symbols(text):
     cleaned_text = re.sub(r'[^\w\s,.!?]', '', text)
@@ -140,7 +109,7 @@ async def generate_speech(text, lang="en"):
         print(f"Generating speech in {lang}...")
 
         speaking = True
-        voice = "en-US-EmmaNeural" if lang == "en" else "es-ES-ElviraNeural" # You can change the voice here
+        voice = "en-US-EmmaNeural" if lang == "en" else "es-ES-ElviraNeural" #Custommize Voices here
 
         communicate = Communicate(clean_text, voice=voice)
         output_file = "temp_response.mp3"
@@ -171,9 +140,9 @@ def ask_ollama(query):
         conversation_context = get_conversation_context()
         full_prompt = f"{conversation_context}\nUser: {query}\nVoice Assistant:"
         
-        if "online" in query.lower(): # YOu can change online mode trigger word here
+        if "online" in query.lower(): #Customize online triggerword here
             print("Switching to internet search mode...")
-            llm = OllamaChat(model="llama3.1") # Change model here
+            llm = OllamaChat(model="llama3.1") #change model here
             agent = OnlineAgent(llm)
             e = query.replace('online', '')
             search_response = agent.search(e)
@@ -181,7 +150,7 @@ def ask_ollama(query):
             response_text = search_response.strip() if isinstance(search_response, str) else "I couldn't find real-time information."
         else:
             print("Using local Ollama model...")
-            response = ollama.chat(model="llama3.1", messages=[  # Change model here for local mode
+            response = ollama.chat(model="llama3.1", messages=[ #Change model here
                 {"role": "system", "content": conversation_context},
                 {"role": "user", "content": full_prompt}
             ])
@@ -240,7 +209,8 @@ def toggle_recording():
 
         except Exception as e:
             print(f"Speech recognition error: {e}")
+            send_notification("Error", "Could not understand audio")
 
 if __name__ == "__main__":
-    keyboard.add_hotkey('alt', toggle_recording) # Customize trigger key
-    keyboard.wait('esc') # Customize the key that breaks out of the program
+    keyboard.add_hotkey('alt', toggle_recording) #Customize hotkeys here
+    keyboard.wait('esc') #Customize exit key here
