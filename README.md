@@ -1,17 +1,17 @@
-# 🤖 AI Voice Assistant
+#  Ollama Voice Assistant 🦙
 
 A **local voice assistant** powered by **Ollama (Llama 3.1)** for **smart, chatty, and interactive conversations**.  
 It **remembers previous conversations**, has a **sassy personality**, and **supports multiple languages**.
 
 ## 🚀 Features
 
-✔ **Voice Recognition**: Uses **Google Speech Recognition** to process spoken commands.  
-✔ **AI Responses**: Uses **Ollama (Llama 3.1)** to generate **smart, contextual** replies.  
-✔ **Memory System**: Saves and recalls conversation history for **better interactions**.  
-✔ **Text-to-Speech (TTS)**: Uses **Microsoft Edge TTS** for **natural speech synthesis**.  
-✔ **Customizable Personality**: Can be **sassy, serious, or technical** (modifiable in `conversation_history.json`).  
-✔ **Notification Support**: Sends **system notifications** for **assistant responses**.  
-✔ **Background Mode**: Runs **silently in the background** using a `.bat` file.  
+- **Voice Recognition**: Uses **Google Speech Recognition** to process spoken commands.  
+- **AI Responses**: Uses **Ollama (Llama 3.1)** to generate **smart, contextual** replies.  
+- **Memory System**: Saves and recalls conversation history for **better interactions**.  
+- **Text-to-Speech (TTS)**: Uses **Microsoft Edge TTS** for **natural speech synthesis**.  
+- **Customizable Personality**: Can be **sassy, serious, or technical** (modifiable in `conversation_history.json`).  
+- **Notification Support**: Sends **system notifications** for **assistant responses**.  
+- **Background Mode**: Runs **silently in the background** using a `.bat` file.  
 
 ---
 
