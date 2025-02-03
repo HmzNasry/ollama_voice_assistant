@@ -112,7 +112,8 @@ start_assistant.bat
 ### **2️⃣ Interacting with the Assistant**
 - Press **ALT** to start/stop recording.  
 - Speak your **question** or **command**.  
-- The assistant will **respond vocally**.  
+- The assistant will **respond vocally**.
+- If you want it to search the internet, you have to mention the trigger word 'online' in your response, but it will be ignored when searching the internet, (it wont mess up your prompt)***
 - Press **ESC** to **exit**.
 
 ### **3️⃣ Example Commands**
