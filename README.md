@@ -100,13 +100,13 @@ response = ollama.chat(model="<CHANGE THIS>", messages=[
 Run the script using:
 
 ```sh
-python assistant.py
+python voice_assistant.py
 ```
 
 Or use the **background mode**:
 
 ```sh
-start_assistant.bat
+va.bat
 ```
 
 ### **2️⃣ Interacting with the Assistant**
@@ -176,16 +176,16 @@ start_assistant.bat
 ### **What is `start_assistant.bat`?**
 This file runs the assistant **silently** in the background.
 
-**Contents of `start_assistant.bat`**:
+**Contents of `va.bat`**:
 ```bat
 @echo off
-start /min pythonw assistant.py
+start /min pythonw voice_assistant.py
 ```
 - **`pythonw`** = Runs Python without opening a console window.
 - **`start /min`** = Minimizes the process.
 
 ### **How to Use the `.bat` File**
-1. **Double-click** `start_assistant.bat` to **run the assistant silently**.
+1. **Double-click** `va.bat` to **run the assistant silently**.
 2. Press **ALT** to start/stop voice input.
 3. Press **ESC** to exit.
 
