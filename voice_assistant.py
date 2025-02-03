@@ -74,8 +74,8 @@ def update_conversation_history(user_input, assistant_response):
     history = load_conversation_history()
     timestamp = dt.strftime("%Y-%m-%d %H:%M:%S")  
 
-    history["user"].append(f"{timestamp}: {user_input}")  
-    history["assistant"].append(f"{timestamp}: {assistant_response}")  
+    history["user"].append(f"{timestamp}: 'User': {user_input}")  
+    history["assistant"].append(f"{timestamp}: 'Assistant': {assistant_response}") 
 
     save_conversation_history(history)
     print(f"Updated conversation history:\nUser: {user_input}\nAssistant: {assistant_response}")
