@@ -69,7 +69,13 @@ Run the following command to download **Llama 3.1**:
 ollama pull llama3.1
 ```
 
-### **3. Recommended Models Based on Hardware**
+### **3. Starting Local Server
+After you have the model installed, run:
+```
+ollama serve
+```
+
+### **4. Recommended Models Based on Hardware**
 
 | Hardware Specs | Recommended Model |
 |--------------|----------------|
@@ -80,7 +86,7 @@ ollama pull llama3.1
 
 To change models, update the `model` parameter in the code:
 ```python
-response = ollama.chat(model="mistral", messages=[
+response = ollama.chat(model="<CHANGE THIS>", messages=[
     {"role": "system", "content": conversation_context},
     {"role": "user", "content": full_prompt}
 ])
@@ -112,10 +118,9 @@ start_assistant.bat
 ### **3️⃣ Example Commands**
 | Command | Response |
 |---------|----------|
-| *"What's the weather?"* | *"I don't have real-time data, but you can check online!"* |
+| *"What's the weather in Seattle online?"* | *"According to the information from the internet, the weather in seattle is 37 degrees fahrenheit"* |
 | *"Tell me a joke."* | *"Why don’t programmers like nature? It has too many bugs!"* |
 | *"Translate hello to Spanish."* | *"Hola!"* |
-| *"Bye."* | *"Goodbye! Have a great day!"* |
 
 ---
 
