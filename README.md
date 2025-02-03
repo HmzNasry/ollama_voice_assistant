@@ -33,7 +33,7 @@ pip install speechrecognition plyer langdetect edge-tts llm-axe ollama keyboard
 ---
 
 ### **2️⃣ Install `ffmpeg` (Required for Audio)**
-✅ **Windows**:
+🇽 **Windows**:
 1. Download `ffmpeg` from [here](https://www.gyan.dev/ffmpeg/builds/).
 2. Extract the ZIP file to `C:\ffmpeg`.
 3. Add `C:\ffmpeg\bin` to **System Path** (Environment Variables).
@@ -43,14 +43,47 @@ pip install speechrecognition plyer langdetect edge-tts llm-axe ollama keyboard
    ffmpeg -version
    ```
 
-✅ **Linux (Debian/Ubuntu)**:
+🇱 **Linux (Debian/Ubuntu)**:
 ```sh
 sudo apt install ffmpeg
 ```
 
-✅ **MacOS**:
+🇲 **MacOS**:
 ```sh
 brew install ffmpeg
+```
+
+---
+
+## 📺 Setting up Ollama (Required for AI Responses)
+
+Ollama provides **local LLM inference** without internet dependency.
+
+### **1. Install Ollama**
+Download and install Ollama from the official site:
+- **Windows/macOS/Linux**: [Ollama Official Site](https://ollama.ai/download)
+
+### **2. Download the Default Model**
+Run the following command to download **Llama 3.1**:
+```sh
+ollama pull llama3.1
+```
+
+### **3. Recommended Models Based on Hardware**
+
+| Hardware Specs | Recommended Model |
+|--------------|----------------|
+| ✅ **Low-end (8GB RAM, iGPU, laptop)** | `mistral` or `phi` |
+| ✅ **Mid-range (16GB RAM, RTX 3060/4060)** | `llama3` (smaller versions) |
+| ✅ **High-end (32GB+ RAM, RTX 4080/4090, A100, H100)** | `llama3.1` or `mixtral` |
+| ✅ **AI-optimized GPU (3090, 4090, A100, etc.)** | `gemma`, `command-r` |
+
+To change models, update the `model` parameter in the code:
+```python
+response = ollama.chat(model="mistral", messages=[
+    {"role": "system", "content": conversation_context},
+    {"role": "user", "content": full_prompt}
+])
 ```
 
 ---
@@ -86,14 +119,14 @@ start_assistant.bat
 
 ---
 
-## 📜 Understanding the Code
+## 🐟 Understanding the Code
 
 ### **🔹 1. Conversation Memory (`conversation_history.json`)**
 - Stores **past conversations** for **contextual responses**.
 - **Modify Assistant Personality**:
   ```json
   {
-    "context": "Be a sassy and very smart voice assistant...",
+    "context": "Be a professional and engaging voice assistant...",
     "user": [],
     "assistant": []
   }
@@ -128,13 +161,6 @@ start_assistant.bat
       {"role": "user", "content": full_prompt}
   ])
   response_text = response["message"]["content"].strip()
-  ```
-
-#### **Text-to-Speech (Microsoft Edge TTS)**
-- Converts the assistant's response into **natural-sounding speech**:
-  ```python
-  communicate = Communicate(response_text, voice="en-US-EmmaNeural")
-  await communicate.save("temp_response.mp3")
   ```
 
 ---
