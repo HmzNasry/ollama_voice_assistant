@@ -1,111 +1,166 @@
-Voice Assistant using Llama 3.1 and Speech Recognition
+# 🎤 AI Voice Assistant
 
+A **local voice assistant** powered by **Ollama (Llama 3.1)** for **smart, chatty, and interactive conversations**.  
+It **remembers previous conversations**, has a **sassy personality**, and **supports multiple languages**.
 
-This project is a voice assistant that responds to user queries using Llama 3.1 and provides a  professional interaction style. It includes voice recognition, text-to-speech synthesis, and conversation history management.
+## 🚀 Features
 
-Video Demonstration: https://www.youtube.com/watch?v=2ckEW8PPW-w
+✔ **Voice Recognition**: Uses **Google Speech Recognition** to process spoken commands.  
+✔ **AI Responses**: Uses **Ollama (Llama 3.1)** to generate **smart, contextual** replies.  
+✔ **Memory System**: Saves and recalls conversation history for **better interactions**.  
+✔ **Text-to-Speech (TTS)**: Uses **Microsoft Edge TTS** for **natural speech synthesis**.  
+✔ **Customizable Personality**: Can be **sassy, serious, or technical** (modifiable in `conversation_history.json`).  
+✔ **Notification Support**: Sends **system notifications** for **assistant responses**.  
+✔ **Background Mode**: Runs **silently in the background** using a `.bat` file.  
 
-Features
+---
 
-Voice Recognition: Uses speech_recognition to convert speech to text.
+## 🔧 Installation Guide
 
-Text-to-Speech (TTS): Uses edge_tts to generate speech responses.
+### **1️⃣ Install Dependencies**
+Run the following command to install all required **Python libraries**:
 
-Conversation Context: Maintains conversation history in conversation_history.json.
-
-Ollama Integration: Communicates with the Llama 3.1 model via subprocess.
-
-Keyboard Shortcuts: Press Alt to start and stop recording; press Esc to exit.        
-
-Desktop Notifications: Uses plyer.notification for feedback.
-
-Requirements
-
-Python 3.13.1 (I Haven't Tested Other Versions)
-
-Required dependencies (install using pip):
-
-pip install keyboard dotenv speechrecognition edge_tts plyer
-
-FFmpeg installed (needed for playing audio responses)
-
-Llama 3.1 installed and accessible via ollama
-
-
-***NOTES***
-
-***MAKE SURE TO INSTALL FFMPEG AND PUT IT IN YOUR SYSTEM'S PATH ENVIRONMENT VARIABLE**
-
-Make sure you have ollama installed, default model for this is llama3.1, but can be changed from the python file
-
-It is configured to run in the background, press esc to stop it from running, if you cant, go to the task manager and stop pythton, it can also be stopped if you say bye or go away or quit or shut up.
-
-Inside the python code I've added some comments where you can change some of the preferences to however you like, make sure all the files are in the same directory.
-
-Installation
-
-- Clone the Repository: - 
-
-git clone https://github.com/HmzNasry/windows_voice_assistant_ollama.git
-
-
-cd \windows_voice_assistant_ollama
-
-
-- Install Dependencies: -
-
+```sh
 pip install -r requirements.txt
+```
 
-Ollama Setup
+**OR** install manually:
 
-- Install Ollama: -
+```sh
+pip install speechrecognition plyer langdetect edge-tts llm-axe ollama keyboard
+```
 
-curl -fsSL https://ollama.ai/install.sh | sh
+---
 
-- Verify Installation: -
+### **2️⃣ Install `ffmpeg` (Required for Audio)**
+✅ **Windows**:
+1. Download `ffmpeg` from [here](https://www.gyan.dev/ffmpeg/builds/).
+2. Extract the ZIP file to `C:\ffmpeg`.
+3. Add `C:\ffmpeg\bin` to **System Path** (Environment Variables).
+4. Verify installation by running:
 
-ollama --version
+   ```sh
+   ffmpeg -version
+   ```
 
- - Run Llama 3.1 in Ollama: -
+✅ **Linux (Debian/Ubuntu)**:
+```sh
+sudo apt install ffmpeg
+```
 
-ollama run llama3.1
+✅ **MacOS**:
+```sh
+brew install ffmpeg
+```
 
-More Information: Visit https://ollama.ai/docs
+---
 
-Running the Assistant -
+## ▶️ How to Use
 
-- Start the assistant:
+### **1️⃣ Start the Assistant**
+Run the script using:
 
-python voice_assistant.py
+```sh
+python assistant.py
+```
 
-**OR**
+Or use the **background mode**:
 
-Theres a bat file in the same folder that can automatically start the program for you, you can either press win + r and do shell:startup and copy and paste the file in there, or figure out another way to make a hotkey or something to run that .bat file
+```sh
+start_assistant.bat
+```
 
-- Usage: -
+### **2️⃣ Interacting with the Assistant**
+- Press **ALT** to start/stop recording.  
+- Speak your **question** or **command**.  
+- The assistant will **respond vocally**.  
+- Press **ESC** to **exit**.
 
-Press Alt to start/stop voice recording.
+### **3️⃣ Example Commands**
+| Command | Response |
+|---------|----------|
+| *"What's the weather?"* | *"I don't have real-time data, but you can check online!"* |
+| *"Tell me a joke."* | *"Why don’t programmers like nature? It has too many bugs!"* |
+| *"Translate hello to Spanish."* | *"Hola!"* |
+| *"Bye."* | *"Goodbye! Have a great day!"* |
 
-Press Esc to exit.
+---
 
-Responses will be spoken aloud and partly displayed in notifications.
+## 📜 Understanding the Code
 
-- Notes -
+### **🔹 1. Conversation Memory (`conversation_history.json`)**
+- Stores **past conversations** for **contextual responses**.
+- **Modify Assistant Personality**:
+  ```json
+  {
+    "context": "Be a sassy and very smart voice assistant...",
+    "user": [],
+    "assistant": []
+  }
+  ```
+  - Change `"context"` to **customize personality**.
 
-The assistant saves conversation history in conversation_history.json.
+### **🔹 2. Recording Hotkeys**
+- **`ALT`** = Start/Stop recording.
+- **`ESC`** = Exit the assistant.
 
-Uses ffplay to play response audio (ffmpeg is required).
+### **🔹 3. Customizing Sounds**
+- **Confirmation Sound** (`confirmation.mp3`) = Plays when recording starts/stops.
+- **Exit Sound** (`close.wav`) = Plays when the assistant is closed.
 
-Requires a working microphone for speech input.
+### **🔹 4. Key Code Parts**
+#### **Speech Recognition (Google API)**
+- The assistant **listens to the microphone** and **converts speech to text**:
+  ```python
+  recognizer = sr.Recognizer()
+  mic = sr.Microphone()
 
-- Download Links -
+  with mic as source:
+      recognizer.adjust_for_ambient_noise(source)
+      audio_data = recognizer.listen(source, timeout=None)
+  ```
 
-Python 3.13.1: https://www.python.org/downloads/release/python-3131/
+#### **AI Model (Ollama Llama 3.1)**
+- The **Llama 3.1 model** generates responses:
+  ```python
+  response = ollama.chat(model="llama3.1", messages=[
+      {"role": "system", "content": conversation_context},
+      {"role": "user", "content": full_prompt}
+  ])
+  response_text = response["message"]["content"].strip()
+  ```
 
-FFmpeg: https://ffmpeg.org/download.html
+#### **Text-to-Speech (Microsoft Edge TTS)**
+- Converts the assistant's response into **natural-sounding speech**:
+  ```python
+  communicate = Communicate(response_text, voice="en-US-EmmaNeural")
+  await communicate.save("temp_response.mp3")
+  ```
 
-Ollama: https://ollama.ai/docs
+---
 
-Author
+## 📂 Running the Assistant in the Background
 
-Developed by Hamza.
+### **What is `start_assistant.bat`?**
+This file runs the assistant **silently** in the background.
+
+**Contents of `start_assistant.bat`**:
+```bat
+@echo off
+start /min pythonw assistant.py
+```
+- **`pythonw`** = Runs Python without opening a console window.
+- **`start /min`** = Minimizes the process.
+
+### **How to Use the `.bat` File**
+1. **Double-click** `start_assistant.bat` to **run the assistant silently**.
+2. Press **ALT** to start/stop voice input.
+3. Press **ESC** to exit.
+
+---
+
+## 🎉 Conclusion
+Your AI Voice Assistant is now ready to use! Customize responses, adjust memory settings, or change voices to make it more personal. 🚀
+
+Have fun with your smart assistant! 🤖🎤
+
