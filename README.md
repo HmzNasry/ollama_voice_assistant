@@ -79,10 +79,10 @@ ollama serve
 
 | Hardware Specs | Recommended Model |
 |---------------|-------------------|
-| ✅ **Low-end (8GB RAM, iGPU, laptop)** | `mistral` or `phi` |
-| ✅ **Mid-range (16GB RAM, RTX 3060/4060)** | `llama3` (smaller versions) |
-| ✅ **High-end (32GB+ RAM, RTX 4080/4090)** | `llama3.1` or `mixtral` |
-| ✅ **AI-optimized GPU (A100, H100)** | `gemma`, `command-r` |
+|  **Low-end (8GB RAM, iGPU, laptop)** | `mistral` or `phi` |
+|  **Mid-range (16GB RAM, RTX 3060/4060)** | `llama3` (smaller versions) |
+|  **High-end (32GB+ RAM, RTX 4080/4090)** | `llama3.1` or `mixtral` |
+|  **AI-optimized GPU (A100, H100)** | `gemma`, `command-r` |
 
 
 To change models, update the `model` parameter in the code:
@@ -161,7 +161,7 @@ va.bat
   ```
 
 #### **AI Model (Ollama Llama 3.1)**
-- The **Llama 3.1 model** generates responses:
+- The **Llama 3.1 model** generates responses, this is the default model, you can put the name of any model you want:
   ```python
   response = ollama.chat(model="llama3.1", messages=[
       {"role": "system", "content": conversation_context},
@@ -170,7 +170,7 @@ va.bat
   response_text = response["message"]["content"].strip()
   ```
 ### **Online Mode**
-- The **Model** generates a response using the internet through llm_axe's onlineagent:
+- The **Model** generates a response using the internet through llm_axe's onlineagent, you also have to switch the model here if you want a different model:
 ```python
 if "online" in query.lower():
       print("Switching to internet search mode...")
