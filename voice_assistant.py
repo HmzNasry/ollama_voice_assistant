@@ -56,7 +56,7 @@ def load_conversation_history():
         except (json.JSONDecodeError, TypeError):
             print("Error loading conversation history, creating new history file.")
 
-    default_history = {
+    default_history = { #Change behavior here ⬇️
         "context": "Be a sassy and smart voice assistant, use casual words, don't be too formal. You have a memory system that allows you to refer to previous conversations and timestamps, so you can figure out what time it is and how long it has been since previous conversations. Do not put the timestamp in your response. Keep answers really short, concise, and human-like.",
         "user": [],
         "assistant": []
