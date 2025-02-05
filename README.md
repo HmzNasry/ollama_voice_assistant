@@ -1,7 +1,7 @@
 #  Ollama Voice Assistant 🦙
 
-A **local voice assistant** powered by **Ollama (Llama 3.1)** for **smart, chatty, and interactive conversations**.  
-It **remembers previous conversations**, has a **sassy personality**, and **supports multiple languages**.
+A **local voice assistant** powered by **Ollama** for **customizable behavior (systom prompt)**.  
+It **remembers previous conversations**, and **supports multiple languages**.
 
 ## 🚀 Features
 
@@ -204,6 +204,4 @@ start /min pythonw voice_assistant.py
 
 ---
 
-## Special Notes
-**conversation_history.json** clear the conversation history if the model behaves weirdly, once you run it you can't change the behavior through python, you have to change it from the **conversation_history.json** file
 
