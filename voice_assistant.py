@@ -15,21 +15,21 @@ from langdetect import detect
 from datetime import datetime
 import keyboard
 
-HISTORY_FILE = "conversation_history.json"
+HISTORY_FILE = "conversation_history.json" #To customize behavior change this 👇
 conversation_context = "keep answers short, clear and concise. Do not ask the user questions or offer assistance at the end of your response, just respond to what you were asked. Do not use markdown or symbols in your response, you are communicating through voice, keep answers really short."
 
 startupinfo = subprocess.STARTUPINFO()
 startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 startupinfo.wShowWindow = 0
 
-exit_commands = ["bye", "go away", "quit", "shut up"]
+exit_commands = ["bye", "go away", "quit", "shut up"] # 👈 Customize exit commands here
 speaking = False  
 recording = False  
 audio_data = None  
 
 def play_sound():
     subprocess.run(
-        ["ffplay", "-nodisp", "-autoexit", "confirmation.mp3"],
+        ["ffplay", "-nodisp", "-autoexit", "confirmation.mp3"], # 👈 Replace the file name for your own custom sound effect file
         stdout=subprocess.DEVNULL,
         stderr=subprocess.DEVNULL,
         startupinfo=startupinfo  
@@ -38,7 +38,7 @@ def play_sound():
 def play_close_sound():
     print("Playing close sound...")
     subprocess.run(
-        ["ffplay", "-nodisp", "-autoexit", "close.wav"],
+        ["ffplay", "-nodisp", "-autoexit", "close.wav"], # 👈 Replace the file name for your own custom sound effect file
         stdout=subprocess.DEVNULL,
         stderr=subprocess.DEVNULL,
         startupinfo=startupinfo  
@@ -82,7 +82,8 @@ def send_notification(title, message):
     print(f"Sending notification: {title} - {message[:50]}...")
     truncated_message = message[:256]
     notification.notify(title=title, message=truncated_message, app_name="Voice Assistant", timeout=1)
-
+    
+print("Voice Assistant is ready")
 send_notification("Voice Assistant", "Voice assistant has loaded and is ready, press alt to start/stop recording")
 
 def remove_emojis_and_symbols(text):
@@ -93,7 +94,7 @@ async def generate_speech(text, lang="en"):
     clean_text = remove_emojis_and_symbols(text)
     try:
         speaking = True
-        voice = "en-US-EmmaNeural" if lang == "en" else "es-ES-ElviraNeural" 
+        voice = "en-US-EmmaNeural" if lang == "en" else "es-ES-ElviraNeural"  # 👈 Customize voices here
         print(f"Generating speech for: {clean_text}")
 
         communicate = Communicate(clean_text, voice=voice, rate="+15%")
@@ -128,13 +129,13 @@ def ask_ollama(query):
         
         messages.append({"role": "user", "content": query})
 
-        if "online" in query.lower(): 
-            llm = OllamaChat(model="llama3.1") 
+        if "online" in query.lower(): #  👈 Customize 'online mode' trigger word here
+            llm = OllamaChat(model="llama3.1") #  👈 Change model here
             agent = OnlineAgent(llm)
             search_response = agent.search(query.replace('online', '').strip())
             response_text = search_response.strip() if isinstance(search_response, str) else "I couldn't find real-time information."
         else:
-            response = ollama.chat(model="llama3.1", messages=messages, options={"num_ctx": 32000})  
+            response = ollama.chat(model="llama3.1", messages=messages, options={"num_ctx": 32000})  #  👈 Change model here
             response_text = response["message"]["content"].strip() if response.get("message", {}).get("content") else "Sorry, I couldn't generate a response."
 
         detected_lang = detect(response_text)  
@@ -190,5 +191,5 @@ def toggle_recording():
 
 if __name__ == "__main__":
     print("Voice assistant is running. Press 'Alt' to start/stop recording, 'Esc' to exit.")
-    keyboard.add_hotkey('alt', toggle_recording) 
-    keyboard.wait('esc')
+    keyboard.add_hotkey('alt', toggle_recording)  # 👈 Customiza trigger key here
+    keyboard.wait('esc') # 👈 Customize exit trigger key here
