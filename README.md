@@ -204,8 +204,6 @@ start /min pythonw voice_assistant.py
 
 ---
 
-## 🎉 Conclusion
-Your AI Voice Assistant is now ready to use! Customize responses, adjust memory settings, or change voices to make it more personal. 🚀
-
-Have fun with your smart assistant! 🤖🎤
+## Special Notes
+**conversations_history.json** clear the conversations history if the model behaves weirdly, once you run it you can't change the behavior through python, you have to change it from the **conversations_history.json** file
 
