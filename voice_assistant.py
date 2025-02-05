@@ -16,7 +16,7 @@ from datetime import datetime
 import keyboard
 
 HISTORY_FILE = "conversation_history.json" #To customize behavior change this 👇
-conversation_context = "keep answers short, clear and concise. Do not ask the user questions or offer assistance at the end of your response, just respond to what you were asked. Do not use markdown or symbols in your response, you are communicating through voice, keep answers really short."
+conversation_context = "keep answers short, clear and concise. Do not ask the user questions or offer assistance at the end of your response, just respond to what you were asked. Do not use markdown or symbols in your response, you are communicating through voice, keep answers really short DO NOT PUT TIME STAMPS IN YOUR RESPONSE"
 
 startupinfo = subprocess.STARTUPINFO()
 startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
