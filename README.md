@@ -1,4 +1,4 @@
-#  Ollama Voice Assistant 🦙
+#  Ollama Voice Assistant 
 
 A **local voice assistant** powered by **Ollama** for **customizable behavior (systom prompt)**.  
 It **remembers previous conversations**, and **supports multiple languages**.
