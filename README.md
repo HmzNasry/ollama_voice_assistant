@@ -205,5 +205,5 @@ start /min pythonw voice_assistant.py
 ---
 
 ## Special Notes
-**conversations_history.json** clear the conversations history if the model behaves weirdly, once you run it you can't change the behavior through python, you have to change it from the **conversations_history.json** file
+**conversation_history.json** clear the conversation history if the model behaves weirdly, once you run it you can't change the behavior through python, you have to change it from the **conversation_history.json** file
 
