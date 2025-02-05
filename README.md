@@ -78,11 +78,12 @@ ollama serve
 ### **4. Recommended Models Based on Hardware**
 
 | Hardware Specs | Recommended Model |
-|--------------|----------------|
+|---------------|-------------------|
 | ✅ **Low-end (8GB RAM, iGPU, laptop)** | `mistral` or `phi` |
 | ✅ **Mid-range (16GB RAM, RTX 3060/4060)** | `llama3` (smaller versions) |
-| ✅ **High-end (32GB+ RAM, RTX 4080/4090, A100, H100)** | `llama3.1` or `mixtral` |
-| ✅ **AI-optimized GPU (3090, 4090, A100, etc.)** | `gemma`, `command-r` |
+| ✅ **High-end (32GB+ RAM, RTX 4080/4090)** | `llama3.1` or `mixtral` |
+| ✅ **AI-optimized GPU (A100, H100)** | `gemma`, `command-r` |
+
 
 To change models, update the `model` parameter in the code:
 ```python
