@@ -1,7 +1,11 @@
-speechrecognition
-plyer
-langdetect
-edge-tts
-llm-axe
-ollama
+numpy
+sounddevice
+soundfile
+openai-whisper
 keyboard
+plyer
+requests
+langdetect
+ollama
+llm_axe
+edge-tts
