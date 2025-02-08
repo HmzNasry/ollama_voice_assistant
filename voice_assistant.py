@@ -200,8 +200,9 @@ def ask_ollama(query):
         elif method == "onlineagent":
             searcher = OnlineAgent(llm)
             online_answer = searcher.search(
-                f"{conversation_context}, extract the info from this website: {url} to answer the user's question, {query} also do not say 'the text', or 'the website' or mention the souorce because the user doesn't know what you are talking about, considering the past interactions, {history}
+                f"{conversation_context}, extract the info from this website: {url} to answer the user's question, {query} also do not say 'the text', or 'the website' or mention the souorce because the user doesn't know what you are talking about, considering the past interactions, {history}")
             update_conversation_history(query, online_answer)
+            cleaned_answer = online_answer.replace('According to the information from the internet,', '')
             return cleaned_answer
 
         else:
