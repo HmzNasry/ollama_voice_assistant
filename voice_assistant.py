@@ -59,7 +59,7 @@ date_str = dt_now.strftime("%Y-%m-%d %H:%M:%S")
 conversation_context = (
     f"Keep your answers appropriately short and concise. Do not mention being an AI. "
     f"Do not use markdown, symbols, abbreviations, or acronyms that might not be caught well through text. "
-    f"The user's name is Hamza. The user's location is {city}, {country}, and the current time is {date_str} PST."
+    f"The user's location is {city}, {country}, and the current time is {date_str} PST."
 )
 print(f"[INIT] Detected Location: {city}, {country}")
 
