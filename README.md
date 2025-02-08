@@ -1,5 +1,7 @@
 #  Ollama Voice Assistant 
 
+#***NEW, ENHANCED VERSION UNDER DEVELOPMENT***
+
 A **local voice assistant** powered by **Ollama** for **customizable behavior (systom prompt)**.  
 It **remembers previous conversations**, and **supports multiple languages**.
 
