@@ -373,16 +373,6 @@ docker restart searxng
 
 ---
 
-## Usage
-
-To start the voice assistant, run:
-```bash
-python voice_assistant.py
-```
-
-Press **ALT** to start/stop recording and **ESC** to exit.
-
----
 
 ## Usage
 
