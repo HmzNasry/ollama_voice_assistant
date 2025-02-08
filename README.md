@@ -449,5 +449,5 @@ This project is open-source. Contributions, bug fixes, and feature suggestions a
 
 ---
 
-For any questions refer to `Discord:` `HamzaNasry`
+For any questions refer to `Discord:` `hamzanasry`
 
