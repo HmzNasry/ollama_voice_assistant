@@ -204,7 +204,7 @@ vi settings.yml
 use_default_settings: true
 
 server:
-  secret_key: "a8s7d98a7sd9a87sd98a7sd98a7sd"
+  secret_key: "<PUT A SECRET KEY HERE>"
   limiter: false  # Fully disable rate limiting
   public_instance: false  # Allow API access
   image_proxy: true
