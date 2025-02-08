@@ -130,67 +130,212 @@ Ollama provides local inference without internet dependency. To set up:
    ollama serve
    ```
 
-4. **Model Customization:**  
-   Modify the model name in the code if you wish to use a different model.
-
 ---
 
-### SearxNG Setup (For Internet Searches)
+### SearxNG Quick Setup (For Internet Searches)
 
-This version integrates SearxNG to perform real-time internet searches when needed.
-
-1. **Installation and Configuration:**  
-   Follow the detailed setup instructions in the [SearxNG Documentation](https://searxng.github.io/searxng/).
-
-2. **Local Instance:**  
-   Ensure your SearxNG instance is running and accessible, typically at `http://localhost:8080/search`.
-
-3. **Integration in Code:**  
-   The assistant sends search queries to this endpoint to fetch real-time data.
-
----
-
-## Usage
-
-### Running the Assistant
-
-To start the voice assistant, run:
-
+#### Quick Setup (Using Docker)
+To quickly set up SearxNG, run the following **Docker command** inside the same directory as the voice assistant Python script:
 ```bash
-python voice_assistant.py
+docker run -d --name searxng -p 8080:8080 searxng/searxng
 ```
 
-For background mode on Windows, use a batch file (e.g., `va.bat`):
-
-```bat
-@echo off
-start /min pythonw voice_assistant.py
+Once the container is running, access it using:
+```bash
+docker exec -it searxng /bin/sh
 ```
 
-### Interacting with the Assistant
+To copy and paste the **configuration files** into the container:
 
-- **Press ALT**: Toggles recording (start/stop capturing your query).
-- **Speak Your Command/Question**: Your speech is transcribed by Whisper.
-- **Processing:**  
-  The assistant uses Ollama to generate responses. It may perform an internet search via SearxNG if necessary (based on the custom prompt logic).
-- **Response:**  
-  The generated reply is saved in conversation history, synthesized to speech via Edge TTS, and played back.
-- **Exit:**  
-  Saying exit commands (e.g., "bye", "quit") or pressing ESC will terminate the application.
+Windows (PowerShell)
+```powershell
+notepad C:\searxng\settings.yml  # Main settings
+notepad C:\searxng\Caddyfile     # Reverse proxy settings
+notepad C:\searxng\.env          # Environment settings
+Windows (WSL - If Running SearxNG in a Linux Environment)
+```
+Windows (WSL - If Running SearxNG in a Linux Environment)
+```
+nano /etc/searxng/settings.yml  # Main settings
+nano /etc/searxng/Caddyfile     # Reverse proxy settings
+nano /etc/searxng/.env          # Environment settings
+```
+Linux / macOS (Terminal)
+```
+sudo nano /etc/searxng/settings.yml  # Main settings
+sudo nano /etc/searxng/Caddyfile     # Reverse proxy settings
+sudo nano /etc/searxng/.env          # Environment settings
+If Running Inside a Docker Container (Linux/macOS/WSL)
+```
+```
+docker exec -it searxng /bin/sh
+nano /etc/searxng/settings.yml  # Main settings
+nano /etc/searxng/Caddyfile     # Reverse proxy settings
+nano /etc/searxng/.env          # Environment settings
+```
+**Copy and paste the following files into their respective locations**:
 
-### Example Commands
+#### **Caddyfile**
+```
+{
+  admin off
+}
 
-| **Command**                                      | **Expected Behavior**                                                                                 |
-| ------------------------------------------------ | ----------------------------------------------------------------------------------------------------- |
-| *"What's the weather like today"*      | Triggers an internet search via SearxNG and responds with current weather data, based on your city and current time.                       |
-| *"Tell me a joke."*                              | Generates a joke using Ollama and reads it aloud.                                                   |
-| *"Translate hello to Spanish."*                  | Provides a translation (e.g., "Hola!") and vocalizes the response in the appropriate language.       |
+{$SEARXNG_HOSTNAME} {
+  log {
+        output discard
+  }
 
----
+  tls {$SEARXNG_TLS}
 
-## License and Contributions
+  @api {
+        path /config
+        path /healthz
+        path /stats/errors
+        path /stats/checker
+        path /search
+  }
 
-This project is open source. Contributions, issues, and feature requests are welcome. Please follow the repository’s contribution guidelines when submitting changes or enhancements.
+  @static {
+        path /static/*
+  }
+
+  @notstatic {
+        not path /static/*
+  }
+
+  @imageproxy {
+        path /image_proxy
+  }
+
+  @notimageproxy {
+        not path /image_proxy
+  }
+
+  header {
+        Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+        X-XSS-Protection "1; mode=block"
+        X-Content-Type-Options "nosniff"
+        Permissions-Policy "accelerometer=(),ambient-light-sensor=(),autoplay=(),camera=(),encrypted-media=(),focus-without-user-activation=(),geolocation=(),gyroscope=(),magnetometer=(),microphone=(),midi=(),payment=(),picture-in-picture=(),speaker=(),sync-xhr=(),usb=(),vr=()"
+        Feature-Policy "accelerometer 'none';ambient-light-sensor 'none'; autoplay 'none';camera 'none';encrypted-media 'none';focus-without-user-activation 'none'; geolocation 'none';gyroscope 'none';magnetometer 'none';microphone 'none';midi 'none';payment 'none';picture-in-picture 'none'; speaker 'none';sync-xhr 'none';usb 'none';vr 'none'"
+        Referrer-Policy "no-referrer"
+        X-Robots-Tag "noindex, noarchive, nofollow"
+        -Server
+  }
+
+  header @api {
+        Access-Control-Allow-Origin  "*"
+        Access-Control-Allow-Methods "GET, POST, OPTIONS"
+        Access-Control-Allow-Headers "*"
+        Access-Control-Expose-Headers "*"
+  }
+
+  header @static {
+        Cache-Control "public, max-age=31536000"
+        defer
+  }
+
+  header @notstatic {
+        Cache-Control "no-cache, no-store"
+        Pragma "no-cache"
+  }
+
+  header @imageproxy {
+        Content-Security-Policy "default-src 'none'; img-src 'self' data:"
+  }
+
+  header @notimageproxy {
+        Content-Security-Policy "upgrade-insecure-requests; default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; form-action 'self' https://github.com/searxng/searxng/issues/new; font-src 'self'; frame-ancestors 'self'; base-uri 'self'; connect-src 'self' https://overpass-api.de; img-src 'self' data: https://*.tile.openstreetmap.org; frame-src https://www.youtube-nocookie.com https://player.vimeo.com https://www.dailymotion.com https://www.deezer.com https://www.mixcloud.com https://w.soundcloud.com https://embed.spotify.com"
+  }
+
+  # SearXNG
+  handle {
+        encode zstd gzip
+
+        reverse_proxy localhost:8080 {
+               header_up X-Real-IP {remote_host}
+               header_up X-Forwarded-For {remote_host}
+               header_up X-Forwarded-Port {http.request.port}
+               header_up X-Forwarded-Proto {http.request.scheme}
+
+               header_up Access-Control-Allow-Origin "*"
+               header_up Access-Control-Allow-Methods "GET, POST, OPTIONS"
+               header_up Access-Control-Allow-Headers "*"
+               header_up Access-Control-Expose-Headers "*"
+               header_up User-Agent ""
+        }
+  }
+
+  @api_requests path /*
+  
+  handle @api_requests {
+      header Access-Control-Allow-Origin "*"
+      header Access-Control-Allow-Methods "GET, POST, OPTIONS"
+      header Access-Control-Allow-Headers "*"
+      header Access-Control-Expose-Headers "*"
+
+      reverse_proxy localhost:8080
+  }
+
+  debug
+}
+
+```
+
+#### **.env File**
+```
+# By default listen on https://localhost
+# To change this:
+# * uncomment SEARXNG_HOSTNAME, and replace <host> by the SearXNG hostname
+# * uncomment LETSENCRYPT_EMAIL, and replace <email> by your email (require to create a Let's Encrypt certificate)
+
+# SEARXNG_HOSTNAME=<host>
+# LETSENCRYPT_EMAIL=<email>
+
+# Optional:
+# If you run a very small or a very large instance, you might want to change the amount of used uwsgi workers and threads per worker
+# More workers (= processes) means that more search requests can be handled at the same time, but it also causes more resource usage
+
+# SEARXNG_UWSGI_WORKERS=4
+# SEARXNG_UWSGI_THREADS=4
+SEARXNG_RATE_LIMIT=0
+
+```
+
+#### **settings.yaml**
+```
+# see https://docs.searxng.org/admin/settings/settings.html#settings-use-default-settings
+use_default_settings: true
+
+server:
+  secret_key: "a8s7d98a7sd9a87sd98a7sd98a7sd"
+  limiter: false  # Fully disable rate limiting
+  public_instance: false  # Allow API access
+  image_proxy: true
+  api_enabled: true  
+  http_protocol_version: "1.1"
+  default_http_headers:
+    Access-Control-Allow-Origin: "*"
+    Access-Control-Allow-Methods: "GET, POST, OPTIONS"
+    Access-Control-Allow-Headers: "*"
+
+ui:
+  static_use_hash: true
+
+redis:
+  url: redis://redis:6379/0
+
+search:
+  formats:
+    - html
+    - json 
+
+```
+
+After editing, restart the container:
+```bash
+docker restart searxng
+```
 
 ---
 
