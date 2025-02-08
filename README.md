@@ -132,7 +132,23 @@ Ollama provides local inference without internet dependency. To set up:
 
 ---
 
-### SearxNG Quick Setup (For Internet Searches)
+### SearxNG
+
+This version integrates SearxNG to perform real-time internet searches when needed.
+
+1. **Installation and Configuration:**  
+   Follow the detailed setup instructions in the [SearxNG Documentation](https://searxng.github.io/searxng/).
+
+2. **Local Instance:**  
+   Ensure your SearxNG instance is running and accessible, typically at `http://localhost:8080/search`.
+
+3. **Integration in Code:**  
+   The assistant sends search queries to this endpoint to fetch real-time data.
+
+
+
+
+### SearxNG Quick Setup 
 
 #### Quick Setup (Using Docker)
 To quickly set up SearxNG, run the following **Docker command** inside the same directory as the voice assistant Python script:
