@@ -1,5 +1,4 @@
-# Ollama Voice Assistant – Enhanced Version (Under Development)
-
+# Ollama Voice Assistant
 ---
 
 ## Table of Contents
