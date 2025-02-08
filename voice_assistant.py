@@ -304,9 +304,5 @@ def toggle_recording():
 
 # --- Main ---
 if __name__ == "__main__":
-    print("[INIT] Loading Whisper medium model...")
-    whisper_model = whisper.load_model("medium")
-    send_notification("Voice Assistant", "Voice assistant is ready. Press Alt to start/stop recording.")
-    print("Voice Assistant is running. Press 'Alt' to start/stop recording, 'Esc' to exit.")
-    keyboard.add_hotkey('alt', toggle_recording)
-    keyboard.wait('esc')
+    keyboard.add_hotkey('alt', toggle_recording) #Customize hotkeys here
+    keyboard.wait('esc') #Customize exit key here

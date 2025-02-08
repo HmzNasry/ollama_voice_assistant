@@ -128,21 +128,35 @@ Ollama provides local inference without internet dependency. To set up:
    ollama serve
    ```
 
+### **4. Recommended Models Based on Hardware**
+
+| Hardware Specs | Recommended Model |
+|--------------|----------------|
+| ✅ **Low-end (8GB RAM, iGPU, laptop)** | `mistral` or `phi` |
+| ✅ **Mid-range (16GB RAM, RTX 3060/4060)** | `llama3` (smaller versions) |
+| ✅ **High-end (32GB+ RAM, RTX 4080/4090, A100, H100)** | `llama3.1` or `mixtral` |
+| ✅ **AI-optimized GPU (3090, 4090, A100, etc.)** | `gemma`, `command-r` |
+
+To change models, update the `model` parameter in the code:
+```python
+response = ollama.chat(model="<CHANGE THIS>", messages=[
+    {"role": "system", "content": conversation_context},
+    {"role": "user", "content": full_prompt}
+])
+```
+
 ---
 
-### Running the Assistant on Different Operating Systems
+## ▶️ How to Use
 
-#### **Windows (.bat file)**
+### **1️. Start the Assistant**
+Run the script using:
 
-**MAKE SURE TO PUT THE CORRECT PATH TO `voice_assistant.py` IN THE PLACEHOLDER AREA**
+```sh
+python voice_assistant.py
+```
 
-Run `va.bat` to start the assistant in the background.
-
-#### **Linux/macOS (.sh file)**
-
-**MAKE SURE TO PUT THE CORRECT PATH TO `voice_assistant.py` IN THE PLACEHOLDER AREA**
-
-Run:
+Or use the **background mode**:
 
 ```sh
 chmod +x va.sh
