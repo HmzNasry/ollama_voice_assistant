@@ -384,25 +384,6 @@ Press **ALT** to start/stop recording and **ESC** to exit.
 
 ---
 
-## Troubleshooting
-
-If issues arise:
-- Ensure all dependencies are installed correctly.
-- Verify that Whisper, Ollama, and SearxNG services are running.
-- Check for missing environment variables or configuration errors.
-
----
-
-## License and Contributions
-
-This project is open-source. Contributions, bug fixes, and feature suggestions are welcome! Feel free to submit pull requests or open issues.
-
----
-
-Enjoy using the enhanced Ollama Voice Assistant! 🚀
-
-
-
 ## Usage
 
 To start the voice assistant, run:
