@@ -1,6 +1,6 @@
 # Ollama Voice Assistant – Enhanced Version (Under Development)
 
-> **Note:** This is an updated version of the Ollama Voice Assistant incorporating new AI models, functions, internet search integration via SearxNG, and enhanced voice processing. This README provides comprehensive instructions on installation, configuration, and usage.
+
 
 ---
 
