@@ -417,9 +417,11 @@ The assistant consists of multiple components:
 You can customize:
 
 - The default AI model (`qwen2.5:7b` in `voice_assistant.py`).
-- The speech synthesis voice (modify `Edge TTS` settings).
-- The search behavior (`search_integration.py`).
-
+- The speech synthesis voice (modify `Edge TTS` settings e.g voices).
+- System Prompts (behavior)
+- Notifications
+- Sounds
+- Memory Structure
 ---
 
 ## Troubleshooting
