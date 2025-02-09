@@ -16,13 +16,18 @@ from plyer import notification
 import ollama
 from llm_axe import OllamaChat, Agent, OnlineAgent
 import edge_tts
+import warnings
+
+warnings.filterwarnings("ignore", message="You are using `torch.load` with `weights_only=False`")
+warnings.filterwarnings("ignore", message="Performing inference on CPU when CUDA is available")
+warnings.filterwarnings("ignore", message="FP16 is not supported on CPU; using FP32 instead")
 
 # --- Global Settings and Variables ---
 HISTORY_FILE = "conversation_history.json"
 exit_commands = ["bye", "quit", "exit"]
 recording = False
 audio_frames = []
-whisper_model = None
+whisper_model = whisper.load_model("medium", device="cpu")
 
 # For sound effects (requires ffplay from FFmpeg in your PATH)
 startupinfo = subprocess.STARTUPINFO()
@@ -304,5 +309,6 @@ def toggle_recording():
 
 # --- Main ---
 if __name__ == "__main__":
+    print(f"[INIT] Model has initialized. Press Alt to start/stop recording")
     keyboard.add_hotkey('alt', toggle_recording) #Customize hotkeys here
     keyboard.wait('esc') #Customize exit key here

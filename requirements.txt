@@ -9,3 +9,4 @@ langdetect
 ollama
 llm_axe
 edge-tts
+warnings
