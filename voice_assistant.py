@@ -275,6 +275,7 @@ async def speak_text_async(text, lang="en"):
         play_sound(temp_filename)
         os.remove(temp_filename)
     except Exception as e:
+        send_notification("Voice Assistant", "TTS Error: {e}")
         print(f"[TTS] Error: {e}")
 
 def speak_text(text, lang="en"):
@@ -298,6 +299,7 @@ def toggle_recording():
             os._exit(0)
         response = ask_ollama(user_text)
         print(f"[Assistant]: {response}")
+        send_notification("Voice Assistant", f"{response}")
         try:
             detected = detect(response)
             lang_code = "en" if detected == "en" else detected
@@ -309,5 +311,6 @@ def toggle_recording():
 # --- Main ---
 if __name__ == "__main__":
     print(f"[INIT] Model has initialized. Press Alt to start/stop recording")
+    send_notification("Voice Assistant", "Voice assistant is ready. Press alt to start/stop recording")
     keyboard.add_hotkey('alt', toggle_recording) #Customize hotkeys here
     keyboard.wait('esc') #Customize exit key here
