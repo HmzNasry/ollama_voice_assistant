@@ -103,7 +103,7 @@ Whisper is used for transcribing recorded audio. Install Whisper with:
 pip install -U openai-whisper
 ```
 
-*Note:* Whisper’s models can require significant memory. The script uses the medium model by default.
+*Note:* Whisper’s models can require significant memory. The script uses the medium model by default. ⚠️The script runs whisper on CPU to conserve memory for the ollama model⚠️
 
 ---
 
@@ -204,7 +204,7 @@ vi settings.yml
 use_default_settings: true
 
 server:
-  secret_key: "a8s7d98a7sd9a87sd98a7sd98a7sd"
+  secret_key: "<PUT A SECRET KEY HERE>"
   limiter: false  # Fully disable rate limiting
   public_instance: false  # Allow API access
   image_proxy: true
