@@ -264,19 +264,23 @@ def transcribe_audio(audio_file, model):
 
 # --- Text-to-Speech using Edge TTS ---
 async def speak_text_async(text, lang="en"):
-    # Choose voice based on language
-    voice = "en-US-EmmaNeural" if lang == "en" else "es-ES-ElviraNeural"
+    if lang == "en":
+        voice = "en-US-EmmaNeural"
+    elif lang == "ar":
+        voice = "ar-EG-SalmaNeural"
+    elif lang == "es":
+        voice = "es-ES-ElviraNeural"
+    else:
+        voice = "en-US-EmmaNeural"
     try:
         communicator = edge_tts.Communicate(text, voice)
         temp_filename = "temp_response.mp3"
-        # Save the synthesized speech to a temporary file
         await communicator.save(temp_filename)
-        # Play the saved file
         play_sound(temp_filename)
         os.remove(temp_filename)
     except Exception as e:
-        send_notification("Voice Assistant", "TTS Error: {e}")
         print(f"[TTS] Error: {e}")
+        send_notification("Voice Assistant", f"TTS Error: {e}")
 
 def speak_text(text, lang="en"):
     asyncio.run(speak_text_async(text, lang))
