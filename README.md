@@ -103,7 +103,8 @@ Whisper is used for transcribing recorded audio. Install Whisper with:
 pip install -U openai-whisper
 ```
 
-*Note:* Whisper’s models can require significant memory. The script uses the medium model by default. ⚠️The script runs whisper on CPU to conserve memory for the ollama model⚠️
+*Note:* Whisper’s models can require significant memory. The script uses the medium model by default.
+⚠️The script runs whisper on CPU to conserve memory for the ollama model⚠️
 
 ---
 
@@ -167,7 +168,7 @@ This will start the assistant and allow it to run in the background.
 
 ---
 
-### SearxNG Setup
+### SearXNG Setup
 
 This version integrates SearxNG to perform real-time internet searches when needed.
 
