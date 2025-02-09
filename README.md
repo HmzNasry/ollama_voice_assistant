@@ -10,7 +10,7 @@
    - [FFmpeg Installation](#ffmpeg-installation)
    - [Whisper Installation](#whisper-installation)
    - [Ollama Setup](#ollama-setup)
-   - [SearxNG Setup](#searxng-setup)
+   - [SearXNG Setup](#searxng-setup)
 4. [Usage](#usage)
 5. [Code Structure and Customization](#code-structure-and-customization)
 6. [Troubleshooting](#troubleshooting)
@@ -25,7 +25,7 @@ This voice assistant is a local application that uses:
 - **Ollama** for AI model inference (default model: `qwen2.5:7b`, customizable).
 - **Whisper (medium model)** for high-quality speech-to-text transcription.
 - **Edge TTS** for natural, synthesized voice responses.
-- **SearxNG** for real-time internet search queries (when required).
+- **SearXNG** for real-time internet search queries (when required).
 - **Keyboard hotkeys** for toggling recording and exiting the assistant.
 - **Conversation memory** stored in a JSON file for context-aware interactions.
 
@@ -40,8 +40,8 @@ This voice assistant is a local application that uses:
   Uses Ollama (via the `llm_axe` library) to generate intelligent, context-rich replies.
 
 - **Internet Search Integration:**\
-  Employs a custom search logic using a local SearxNG instance to fetch up-to-date data when needed.\
-  *Refer to the ********************[SearxNG Documentation](https://searxng.github.io/searxng/)******************** for setup instructions.*
+  Employs a custom search logic using a local SearXNG instance to fetch up-to-date data when needed.\
+  *Refer to the ********************[SearXNG Documentation](https://searxng.github.io/searxng/)******************** for setup instructions.*
 
 - **Natural Text-to-Speech:**\
   Uses Edge TTS to convert responses to speech. Voices adjust based on detected language (default: `en-US-EmmaNeural` for English, `es-ES-ElviraNeural` for Spanish).
@@ -170,22 +170,22 @@ This will start the assistant and allow it to run in the background.
 
 ### SearXNG Setup
 
-This version integrates SearxNG to perform real-time internet searches when needed.
+This version integrates SearXNG to perform real-time internet searches when needed.
 
 1. **Installation and Configuration:**  
-   Follow the detailed setup instructions in the [SearxNG Documentation](https://searxng.github.io/searxng/).
+   Follow the detailed setup instructions in the [SearXNG Documentation](https://searxng.github.io/searxng/).
 
 2. **Local Instance:**  
-   Ensure your SearxNG instance is running and accessible, typically at `http://localhost:8080/search`.
+   Ensure your SearXNG instance is running and accessible, typically at `http://localhost:8080/search`.
 
 3. **Integration in Code:**  
    The assistant sends search queries to this endpoint to fetch real-time data.
 
 #### Quick Setup (Using Docker)
 
-Ensure that **SearxNG is inside the same directory as this project** or that you are **in the `searxng-docker/searxng` directory** when running these commands.
+Ensure that **SearXNG is inside the same directory as this project** or that you are **in the `searxng-docker/searxng` directory** when running these commands.
 
-### **Editing Configuration Files for SearxNG (Docker Setup)**
+### **Editing Configuration Files for SearXNG (Docker Setup)**
 
 #### **Windows (PowerShell)**
 ```powershell
@@ -228,7 +228,7 @@ search:
     - json 
 
 ```
-Save and exit (`ESC` -> `:wq` -> `Enter`), then restart SearxNG:
+Save and exit (`ESC` -> `:wq` -> `Enter`), then restart SearXNG:
 ```bash
 docker restart searxng
 ```
@@ -355,7 +355,7 @@ Restart Caddy:
 docker restart caddy
 ```
 
-#### **Editing `.env` File (Environment Variables for SearxNG)**
+#### **Editing `.env` File (Environment Variables for SearXNG)**
 ##### **Windows (PowerShell)**
 ```powershell
 cd searxng-docker\searxng
@@ -385,7 +385,7 @@ vi .env
 SEARXNG_RATE_LIMIT=0
 
 ```
-Restart SearxNG:
+Restart SearXNG:
 ```bash
 docker restart searxng
 ```
@@ -427,7 +427,7 @@ You can customize:
 If issues arise:
 
 - Ensure all dependencies are installed correctly.
-- Verify that Whisper, Ollama, and SearxNG services are running.
+- Verify that Whisper, Ollama, and SearXNG services are running.
 - Check for missing environment variables or configuration errors.
 
 ---
