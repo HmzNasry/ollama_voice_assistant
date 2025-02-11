@@ -344,10 +344,6 @@ vi Caddyfile
       header Access-Control-Expose-Headers "*"
 
       reverse_proxy localhost:8080
-  }
-
-  debug
-}
 
 ```
 Restart Caddy:
