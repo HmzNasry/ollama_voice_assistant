@@ -1,4 +1,6 @@
 # Ollama Voice Assistant
+
+(Do not expect a bug-free experience, haven't put much time in it)
 ---
 
 ## Table of Contents
