@@ -8,15 +8,18 @@ import tempfile
 import numpy as np
 import sounddevice as sd
 import soundfile as sf
+from trio import current_time
 import whisper
 import keyboard
-from datetime import datetime
+from datetime import date, datetime
 from langdetect import detect
 from plyer import notification
 import ollama
 from llm_axe import OllamaChat, Agent, OnlineAgent
 import edge_tts
 import warnings
+import re
+import signal  
 
 warnings.filterwarnings("ignore", message="You are using `torch.load` with `weights_only=False`")
 warnings.filterwarnings("ignore", message="Performing inference on CPU when CUDA is available")
@@ -32,13 +35,37 @@ startupinfo = subprocess.STARTUPINFO()
 startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 startupinfo.wShowWindow = 0
 
+# Global variables for TTS playback
+tts_process = None
+is_speaking = False  # True when TTS is actively speaking
+tts_stop_requested = False  # Flag to signal stop request
+current_tts_file = None   # Stores the name of the current TTS temp file
+
 def play_sound(sound_file):
-    subprocess.run(
+    global tts_process
+    tts_process = subprocess.Popen(
         ["ffplay", "-nodisp", "-autoexit", sound_file],
         stdout=subprocess.DEVNULL,
         stderr=subprocess.DEVNULL,
-        startupinfo=startupinfo
+        startupinfo=startupinfo,
+        creationflags=subprocess.CREATE_NEW_PROCESS_GROUP 
     )
+
+def stop_speech():
+    global tts_process, is_speaking, tts_stop_requested, current_tts_file
+    if is_speaking:
+        tts_stop_requested = True
+        # Attempt to delete the TTS file; this may force ffplay to fail reading.
+        if current_tts_file and os.path.exists(current_tts_file):
+            try:
+                os.remove(current_tts_file)
+                print("[TTS] Temp file deleted.")
+            except Exception as e:
+                print(f"[TTS] Error deleting temp file: {e}")
+        is_speaking = False
+        tts_process = None
+        current_tts_file = None
+        print("[TTS] Speech stopped.")
 
 def send_notification(title, message):
     truncated = message[:256]
@@ -59,9 +86,14 @@ city, country = get_location()
 dt_now = datetime.now()
 date_str = dt_now.strftime("%Y-%m-%d %H:%M:%S")
 conversation_context = (
-    f"Keep your answers appropriately short and concise. Do not mention being an AI. Talk as you are a human and not robot, do not offer assistance or ask many questions or assume anything about the user"
-    f"Do not use markdown, symbols, abbreviations, or acronyms that might not be caught well through text. "
-    f"The user's location is {city}, {country}, and the current time is {date_str} PST. Do not hallucinate and give falso information unless you have a source and is 100% sure"
+    f"Keep your answers very short and concise."
+    f"Do not ask the user questions, offer assistance or say anything irrelevan, keep your answers concice and very short"
+    f"Do not use markdown, symbols, or abbreviations. "
+    f"The user's location is {city}, {country}, and the current time is {date_str} PST <- THIS INFORMATION IS NOT THE MAIN POINT OF THE CONVERSATIONS, IT IS NOT RELEVANT UNLESS YOU NEED IT! SO STOP MENTIONING IT EVERY TIME!. "
+    f"Do not hallucinate or give false information."
+    f"Do not talk about things that you are not updated on, like the weather, news, or sports, ***UNLESS*** You have relevant information from the internet."
+    f"Do not the assert the time or location or date randomly if you are not prompted to"
+    f"KEEP YOUR ANSWERS SHORT AND DONT SAY STUFF THAT YOU ARE NOT SURE OF"
 )
 print(f"[INIT] Detected Location: {city}, {country}")
 
@@ -106,43 +138,72 @@ def update_conversation_history(user_input, assistant_response):
         history["assistant"].pop(0)
     save_conversation_history(history)
 
-def ask_ollama(query):
+async def ask_ollama_async(query):
     try:
         print(f"\n[ask_ollama] Processing query: {query}")
         history = load_conversation_history()
         system_prompt = conversation_context
 
-        llm = OllamaChat(model="goodllm")
+        llm = OllamaChat(model="Hermit")
 
         plan_agent = Agent(
             llm,
             custom_system_prompt=f"""
-            You are part of a system where the user interacts with you, first the query goes to you BUT YOUR OWNLY JOB IS to decide if it needs internet search or not, and you must only respond with JSON including internet, which can be yes or no and search_query, which must contain a very optimized saerch query to fetch info from the internet for the user's query. After you say yes, the internet will be searched and relevant information will be extracted and feed it to the next AI model, SO YOU CANNOT PUT ANYTHING IN YOUR RESPONSE OTHER THAN THE JSON to Your response MUST be a valid JSON object.
-
-            TASKS:
-            1. Determine if an internet search is required to answer the user's question PAY VERY CLOSE ATTENTION IF INTERNET IS REQUIRED OR NOT, THINGS LIKE WEATHER AND ASKING FOR LATEST STUFF OR NEWS WILL REQUIRE THE INTERNET, FOR EXAMPLE IF THEY SAY WHAT DO I WEAR TODAY THAT NEEDS INETNET SEARCH TO SEE THE FORCAST. Sometimes the user might ask follow-up questions, then you need to include information from past interactions too MAKE SURE TO SAY YES WHEN MOST UP TO DATE INFO IS NEEDED LIKE THE WEATHER AND MORE!!! THE USER IS GONNA ASK FOLLOW UP QUESTIONS LIKE FOR EXAMPLE THE SPECS OF SOMETHING THEY ASKED FOR EARLIER, YOU MUST SEARCH THE INTERNET AND INCLUDE INFO FROM THE LAST INTERACTION.
-               - If yes, set "internet": "yes".
-               - If no, set "internet": "no".
-
-            2. If "internet" is "yes", generate a precise search query and name it search_query.
-               - Consider user location ONLY IF ABSOLUTELY NECESSARY: {city}, {country}.
-               - Consider the current DATE and include time if relevant: {date_str} PST.
-               - Keep it short, relevant, and avoid unnecessary words.
-
-               Important note: Your search query  must make sense according to the past interactions, ESPECIALLY if user asked a follow up question, AND THIS IS VERY IMPORTANT: YOUR SEARCH QUERY CANNOT BE FORMATTED! YOU JUST HAVE TO PUT A STRING NO SLASHES OR FORMATTING!!
-
-            Your response MUST only contain these two JSON fields: "internet" (yes/no) and "search_query" (empty if no search needed).
-            YOUR RESPONSE MUST ***ONLY*** INCLUDE THESE TWO JSON AND ***NOTHING*** ELSE AS IT WILL BE PARSED AS JSON AND SENT TO THE BROWSER, SO MAKE SURE TO PUT NOTHING ELSE IS IN YOUR RESPONSE!!! DO NOT PUT YOUR REASONING IT IS EXTREMELY IMPORTANT THAT YOUR RESPONSE CONTAINS __***NOTHING**__ ELSE
+            You have one job: decide if the user query requires an internet search for an LLM like yourself.
+            Your response MUST be a valid JSON object with exactly two keys: "internet" and "search_query". 
+            - "internet" must be either "yes" or "no".
+            - "search_query" must be a string: if internet is "yes", provide an optimized search query; if "no", use an empty string.
+            Do NOT include any extra text, explanations, markdown, or symbols.
+            Respond exactly with the JSON object only.
+            if you need the time in location, it is {city}, {country}, {date_str}
+            Example: {{{{ "internet": "yes", "search_query": "current weather in Seattle" }}}}
+            
+            You are just a plan agent, the responses in the history are not from you and you don’t have anything to do with them.
+            Your job is only to analyze and decide if an internet search is needed.
+            If your response does not follow the format of the example, you will break the system.
             """
         )
 
-        plan_response = plan_agent.ask(f"***REMEMBER NOT TO PUT ANYTHIG IN YOUR RESPONSE THAT MESSES UP JSON PARSING LIKE SLASHES OR BACK SLASHES! USER'S INPUT: {query}, PAST INTERACIONS (USE TO ANSWR FOLLOW UP QUESTIONS): {history}, REMEMBER YOU ARE PART OF A USER QUERY FILTERING SYSTEM THAT DECIDES IF THE USER'S QUERY NEEDS INFO FROM THE INTERNET, YOUR JSON RESPONSE IS PASSED FURTHER TO OTHER MODELS AND THEY PROVIDE A RESPONSE TO THE USER BASED ON THOSE INFO, SO THE CONVERSATION HISTORY DOESNT COME FROM YOU, DO NOT FORGET WHAT YOUR TASK IS!")
+        json_regex = r'^\s*\{\s*"internet"\s*:\s*"(yes|no)"\s*,\s*"search_query"\s*:\s*".*"\s*\}\s*$'
+        loop = asyncio.get_event_loop()
+        plan_response = await loop.run_in_executor(
+            None,
+            plan_agent.ask,
+            (
+                "You have one job: decide if the user query requires an internet search. note that you run in the background and you cannot interact with the user, your only job is to decide this, if it is already in conoversation history dont search again. "
+                "Your response MUST be a valid JSON object with exactly two keys: \"internet\" and \"search_query\". "
+                "- \"internet\" must be either \"yes\" or \"no\". "
+                "- \"search_query\" must be a string: if internet is \"yes\", provide an optimized search query; if \"no\", use an empty string. "
+                "Do NOT include any extra text, explanations, markdown, or symbols. "
+                "Respond exactly with the JSON object only. "
+                "Example: {\"internet\": \"yes\", \"search_query\": \"example search query\"} "
+                "You are just a plan agent, the responses in the history are not from you and you don’t have anything to do with them. "
+                "Your job is only to analyze and decide if an internet search is needed. "
+                "If your response does not follow the format of the example, you will break the system. "
+                "Remember to only search the internet if UP TO DATE information is required, math problems and general questions do not require internet search!"
+                f"USER QUERY: {query}, HISTORY: {history}"
+            )
+        )
+
         print(f"[Plan Agent] Response: {repr(plan_response)}")
-        try:
-            plan_data = json.loads(plan_response.strip())
-        except json.JSONDecodeError:
-            print("[Plan Agent] JSON Parsing Error, defaulting to local response.")
-            plan_data = {"internet": "no", "search_query": ""}
+
+        if not re.match(json_regex, plan_response.strip()):
+            m = re.search(r'\{.*\}', plan_response, re.DOTALL)
+            if m:
+                try:
+                    plan_data = json.loads(m.group(0))
+                except json.JSONDecodeError:
+                    print("[ERROR] Extracted JSON block invalid. Fallback to direct search.")
+                    plan_data = {"internet": "yes", "search_query": query}
+            else:
+                print("[ERROR] Plan agent did not return valid JSON. Fallback to direct search.")
+                plan_data = {"internet": "yes", "search_query": query}
+        else:
+            try:
+                plan_data = json.loads(plan_response)
+            except json.JSONDecodeError:
+                print("[ERROR] JSON Parsing Failed. Fallback to direct search.")
+                plan_data = {"internet": "yes", "search_query": query}
 
         method = None
         summary = None
@@ -152,7 +213,7 @@ def ask_ollama(query):
             print(f"[ask_ollama] Fetching real-time data for: {plan_data['search_query']}")
             search_url = f"http://localhost:8080/search?q={plan_data['search_query']}&format=json"
             try:
-                search_response = requests.get(search_url)
+                search_response = await loop.run_in_executor(None, requests.get, search_url)
                 print(f"[DEBUG] Search API Response Code: {search_response.status_code}")
                 if search_response.status_code == 200:
                     raw_text = search_response.text.strip()
@@ -169,6 +230,7 @@ def ask_ollama(query):
                         except Exception as e:
                             print(f"[ask_ollama] JSON Parsing Error in search response: {raw_text}")
                             search_results = {}
+
                     print(f"[DEBUG] Raw Search Results:\n{json.dumps(search_results, indent=2, ensure_ascii=False)}")
 
                     if "answers" in search_results and search_results["answers"]:
@@ -189,24 +251,26 @@ def ask_ollama(query):
                         print("[ask_ollama] Neither answers nor sufficient results found in search results.")
             except Exception as e:
                 print(f"[ask_ollama] Error fetching search results: {e}")
+        elif plan_data.get("internet") == "yes" and plan_data.get("search_query") == "":
+            print("[ERROR] Plan agent did not return valid JSON. Fallback to direct search.")
+            plan_data = {"internet": "yes", "search_query": query}
 
         if method == "answers":
-            system_prompt += f" Additional  internet data DO NOT MENTION ANYTHING IF IT IS IRRELEVANT, use whatever you can from this, also do not say 'the text', or 'the website' or mention the souorce because the user doesn't know what you are talking about: {summary}"
+            system_prompt += f" Additional internet data: {summary}"
             messages = [{"role": "system", "content": system_prompt}]
             for u, a in zip(history["user"][-15:], history["assistant"][-15:]):
                 messages.append({"role": "user", "content": u})
                 messages.append({"role": "assistant", "content": a})
             messages.append({"role": "user", "content": query})
-            response = ollama.chat(model="goodllm", messages=messages)
+            response = await loop.run_in_executor(None, ollama.chat, "Hermit", messages)
             response_text = response["message"]["content"].strip()
             update_conversation_history(query, response_text)
             return response_text
 
         elif method == "onlineagent":
             searcher = OnlineAgent(llm)
-            online_answer = searcher.search(
-                f"{conversation_context}, extract the info from this website: {url} to answer the user's question, {query} also do not say 'the text', or 'the website' or mention the souorce because the user doesn't know what you are talking about, considering the past interactions, {history}"
-            )
+            online_answer = await loop.run_in_executor(None, searcher.search,
+                f"{conversation_context}, extract info from this website: {url} to answer the user's question, {query} considering past interactions, {history}")
             update_conversation_history(query, online_answer)
             cleaned_answer = online_answer.replace('Based to the information from the internet,', '')
             return cleaned_answer
@@ -218,7 +282,7 @@ def ask_ollama(query):
                 messages.append({"role": "user", "content": u})
                 messages.append({"role": "assistant", "content": a})
             messages.append({"role": "user", "content": query})
-            response = ollama.chat(model="goodllm", messages=messages)
+            response = await loop.run_in_executor(None, ollama.chat, "Hermit", messages)
             response_text = response["message"]["content"].strip()
             update_conversation_history(query, response_text)
             return response_text
@@ -226,6 +290,9 @@ def ask_ollama(query):
     except Exception as e:
         print(f"[ask_ollama] Error: {e}")
         return "Sorry, there was an issue processing your request."
+
+def ask_ollama(query):
+    return asyncio.run(ask_ollama_async(query))
 
 def audio_callback(indata, frames, time_info, status):
     global audio_frames
@@ -238,7 +305,7 @@ def start_recording():
     stream.start()
     recording = True
     print("[Voice] Recording started...")
-    play_sound("confirmation.mp3") 
+    play_sound("confirmation.mp3")
 
 def stop_recording():
     global stream, recording
@@ -248,7 +315,10 @@ def stop_recording():
     recording = False
     print("[Voice] Recording stopped.")
     play_sound("confirmation.mp3")
-    audio = np.concatenate(audio_frames, axis=0)
+    if len(audio_frames) > 0:
+        audio = np.concatenate(audio_frames, axis=0)
+    else:
+        audio = np.array([])
     return audio
 
 def save_audio_to_temp(audio, fs=16000):
@@ -256,13 +326,15 @@ def save_audio_to_temp(audio, fs=16000):
         sf.write(tmpfile.name, audio, fs)
         return tmpfile.name
 
-def transcribe_audio(audio_file, model):
+def transcribeAudio(audio_file, model):
     print("[Voice] Transcribing audio...")
     result = model.transcribe(audio_file)
     text = result["text"].strip()
     return text
 
 async def speak_text_async(text, lang="en"):
+    global tts_process, is_speaking, tts_stop_requested, current_tts_file
+    is_speaking = True
     if lang == "en":
         voice = "en-US-EmmaNeural"
     elif lang == "ar":
@@ -272,14 +344,23 @@ async def speak_text_async(text, lang="en"):
     else:
         voice = "en-US-EmmaNeural"
     try:
-        communicator = edge_tts.Communicate(text, voice)
+        communicator = edge_tts.Communicate(text, voice, rate="+15%")
         temp_filename = "temp_response.mp3"
+        current_tts_file = temp_filename
         await communicator.save(temp_filename)
         play_sound(temp_filename)
-        os.remove(temp_filename)
+
+        while tts_process is not None and tts_process.poll() is None:
+            if tts_stop_requested:
+                break
+            await asyncio.sleep(0.1)
+        if os.path.exists(temp_filename):
+            os.remove(temp_filename)
     except Exception as e:
         print(f"[TTS] Error: {e}")
         send_notification("Voice Assistant", f"TTS Error: {e}")
+    tts_stop_requested = False
+    is_speaking = False
 
 def speak_text(text, lang="en"):
     asyncio.run(speak_text_async(text, lang))
@@ -290,13 +371,16 @@ async def speak_and_notify(response, lang="en"):
     await asyncio.gather(speak_task, notify_task)
 
 def toggle_recording():
-    global recording, whisper_model
+    global recording, whisper_model, is_speaking
+    if is_speaking:
+        stop_speech()
+        return
     if not recording:
         start_recording()
     else:
         audio = stop_recording()
         temp_audio_file = save_audio_to_temp(audio)
-        user_text = transcribe_audio(temp_audio_file, whisper_model)
+        user_text = transcribeAudio(temp_audio_file, whisper_model)
         os.remove(temp_audio_file)
         print(f"[You]: {user_text}")
         if user_text.lower() in exit_commands:
@@ -314,8 +398,8 @@ def toggle_recording():
         asyncio.run(speak_and_notify(response, lang_code))
 
 if __name__ == "__main__":
-    print(f"[INIT] Voice Assistant ready, press alt to start/stop recording")
-    send_notification("Voice Assistant", "Voice assistant is ready. Press alt to start/stop recording")
+    print("[INIT] Voice Assistant ready, press alt to start/stop recording or to stop speech.")
+    send_notification("Voice Assistant", "Voice assistant is ready. Press alt to start/stop recording or stop speech.")
     keyboard.add_hotkey('alt', toggle_recording)
     keyboard.wait('esc')
     send_notification("Shutting Down", "Goodbye!")
