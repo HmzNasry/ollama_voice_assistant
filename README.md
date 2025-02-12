@@ -1,4 +1,6 @@
 # Ollama Voice Assistant
+
+(Do not expect a bug-free experience, haven't put much time in it)
 ---
 
 ## Table of Contents
@@ -344,10 +346,6 @@ vi Caddyfile
       header Access-Control-Expose-Headers "*"
 
       reverse_proxy localhost:8080
-  }
-
-  debug
-}
 
 ```
 Restart Caddy:
@@ -417,9 +415,11 @@ The assistant consists of multiple components:
 You can customize:
 
 - The default AI model (`qwen2.5:7b` in `voice_assistant.py`).
-- The speech synthesis voice (modify `Edge TTS` settings).
-- The search behavior (`search_integration.py`).
-
+- The speech synthesis voice (modify `Edge TTS` settings e.g voices).
+- System Prompts (behavior)
+- Notifications
+- Sounds
+- Memory Structure
 ---
 
 ## Troubleshooting
