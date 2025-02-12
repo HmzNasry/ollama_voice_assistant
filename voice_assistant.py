@@ -71,18 +71,7 @@ def send_notification(title, message):
     truncated = message[:256]
     notification.notify(title=title, message=truncated, app_name="Voice Assistant", timeout=1)
 
-def get_location():
-    try:
-        response = requests.get("https://ipinfo.io/json", timeout=5)
-        data = response.json()
-        city = data.get("city", "Unknown")
-        country = data.get("country", "Unknown")
-        return city, country
-    except Exception as e:
-        print(f"[get_location] Error: {e}")
-        return "Unknown", "Unknown"
-
-city, country = get_location()
+city, country = "Lynnwood", "United States"
 dt_now = datetime.now()
 date_str = dt_now.strftime("%Y-%m-%d %H:%M:%S")
 conversation_context = (
