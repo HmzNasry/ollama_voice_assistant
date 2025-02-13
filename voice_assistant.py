@@ -133,7 +133,7 @@ async def ask_ollama_async(query):
         history = load_conversation_history()
         system_prompt = conversation_context
 
-        llm = OllamaChat(model="Hermit")
+        llm = OllamaChat(model="qwen2.5:7b")
 
         plan_agent = Agent(
             llm,
@@ -251,7 +251,7 @@ async def ask_ollama_async(query):
                 messages.append({"role": "user", "content": u})
                 messages.append({"role": "assistant", "content": a})
             messages.append({"role": "user", "content": query})
-            response = await loop.run_in_executor(None, ollama.chat, "Hermit", messages)
+            response = await loop.run_in_executor(None, ollama.chat, "qwen2.5:7b", messages)
             response_text = response["message"]["content"].strip()
             update_conversation_history(query, response_text)
             return response_text
@@ -271,7 +271,7 @@ async def ask_ollama_async(query):
                 messages.append({"role": "user", "content": u})
                 messages.append({"role": "assistant", "content": a})
             messages.append({"role": "user", "content": query})
-            response = await loop.run_in_executor(None, ollama.chat, "Hermit", messages)
+            response = await loop.run_in_executor(None, ollama.chat, "qwen2.5:7b", messages)
             response_text = response["message"]["content"].strip()
             update_conversation_history(query, response_text)
             return response_text
