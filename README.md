@@ -38,9 +38,6 @@ This voice assistant is a local application that uses:
 - **Voice Recognition:**\
   Captures audio via `sounddevice` and transcribes using OpenAI’s Whisper.
 
-- **AI-Powered Responses:**\
-  Uses Ollama (via the `llm_axe` library) to generate intelligent, context-rich replies.
-
 - **Internet Search Integration:**\
   Employs a custom search logic using a local SearXNG instance to fetch up-to-date data when needed.\
   *Refer to the ********************[SearXNG Documentation](https://searxng.github.io/searxng/)******************** for setup instructions.*
