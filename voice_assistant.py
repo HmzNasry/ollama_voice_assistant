@@ -75,7 +75,7 @@ city, country = "Lynnwood", "United States"
 dt_now = datetime.now()
 date_str = dt_now.strftime("%Y-%m-%d %H:%M:%S")
 conversation_context = (
-    f"Keep your answers very short and concise."
+    f"Keep your answers clear, detailed and concise."
     f"Do not ask the user questions, offer assistance or say anything irrelevan, keep your answers concice and very short"
     f"Do not use markdown, symbols, or abbreviations. "
     f"The user's location is {city}, {country}, and the current time is {date_str} PST <- THIS INFORMATION IS NOT THE MAIN POINT OF THE CONVERSATIONS, IT IS NOT RELEVANT UNLESS YOU NEED IT! SO STOP MENTIONING IT EVERY TIME!. "
