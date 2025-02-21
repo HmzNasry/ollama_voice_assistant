@@ -1,8 +1,10 @@
 {
     "user": [
-
+        "Hello, can you tell me the latest news today?",
+        "That's quite interesting."
     ],
     "assistant": [
-
+        "Based on information from the internet, a tomb of an ancient Egyptian king was unearthed in a recent discovery.",
+        "Archaeologists believe it may hold secrets to the king's life and reign."
     ]
 }
