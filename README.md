@@ -17,6 +17,7 @@
 5. [Code Structure and Customization](#code-structure-and-customization)
 6. [Troubleshooting](#troubleshooting)
 7. [License and Contributions](#license-and-contributions)
+8. [Adding the Zip Package on GitHub](#adding-the-zip-package-on-github)
 
 ---
 
@@ -24,7 +25,7 @@
 
 This voice assistant is a local application that uses:
 
-- **Ollama** for AI model inference (default model: `qwen2.5:7b`, customizable).
+- **Ollama** for AI model inference (default model: `llama3.1`, customizable).
 - **Whisper (medium model)** for high-quality speech-to-text transcription.
 - **Edge TTS** for natural, synthesized voice responses.
 - **SearXNG** for real-time internet search queries (when required).
@@ -40,10 +41,10 @@ This voice assistant is a local application that uses:
 
 - **Internet Search Integration:**\
   Employs a custom search logic using a local SearXNG instance to fetch up-to-date data when needed.\
-  *Refer to the ********************[SearXNG Documentation](https://searxng.github.io/searxng/)******************** for setup instructions.*
+  *Refer to the [SearXNG Documentation](https://searxng.github.io/searxng/) for setup instructions.*
 
 - **Natural Text-to-Speech:**\
-  Uses Edge TTS to convert responses to speech. Voices adjust based on detected language (default: `en-US-EmmaNeural` for English, `es-ES-ElviraNeural` for Spanish).
+  Uses Edge TTS to convert responses to speech. Voices adjust based on detected language (default: `en-US-AndrewNeural` for English, `es-ES-ElviraNeural` for Spanish).
 
 - **Conversation Memory:**\
   Stores previous interactions in `conversation_history.json` to provide context in follow-up conversations.
@@ -79,19 +80,6 @@ The assistant uses **ffplay** (a component of FFmpeg) to play audio files. Insta
    ffmpeg -version
    ```
 
-#### **Linux (Debian/Ubuntu):**
-
-```bash
-sudo apt update
-sudo apt install ffmpeg
-```
-
-#### **macOS:**
-
-```bash
-brew install ffmpeg
-```
-
 ---
 
 ### Whisper Installation
@@ -115,10 +103,10 @@ Ollama provides local inference without internet dependency. To set up:
    Visit the [Ollama Official Site](https://ollama.ai/download) and follow the installation instructions for your OS.
 
 2. **Pull a Model:**\
-   For example, to pull the `qwen2.5:7b` model, run:
+   For example, to pull the `llama3.1` model, run:
 
    ```bash
-   ollama pull qwen2.5:7b
+   ollama pull llama3.1
    ```
 
 3. **Start the Ollama Server:**\
@@ -159,8 +147,7 @@ python voice_assistant.py
 Or use the **background mode**:
 
 ```sh
-chmod +x va.sh
-./va.sh
+va.bat
 ```
 
 This will start the assistant and allow it to run in the background.
@@ -192,11 +179,6 @@ cd searxng-docker\searxng
 notepad settings.yml
 ```
 
-#### **Linux/macOS (Terminal)**
-```bash
-cd searxng-docker/searxng
-vi settings.yml
-```
 **Paste the updated `settings.yml` content below:**
 
 ```yml
@@ -227,7 +209,7 @@ search:
     - json 
 
 ```
-Save and exit (`ESC` -> `:wq` -> `Enter`), then restart SearXNG:
+Save and exit, then restart SearXNG:
 ```bash
 docker restart searxng
 ```
@@ -237,11 +219,6 @@ docker restart searxng
 ```powershell
 cd searxng-docker\searxng
 notepad Caddyfile
-```
-##### **Linux/macOS (Terminal)**
-```bash
-cd searxng-docker/searxng
-vi Caddyfile
 ```
 **Paste the updated `Caddyfile` content below:**
 ```txt
@@ -356,11 +333,6 @@ docker restart caddy
 cd searxng-docker\searxng
 notepad .env
 ```
-##### **Linux/macOS (Terminal)**
-```bash
-cd searxng-docker/searxng
-vi .env
-```
 **Paste the updated `.env` content below:**
 ```ini
 # By default listen on https://localhost
@@ -387,7 +359,6 @@ docker restart searxng
 
 ---
 
-
 ## Usage
 
 To start the voice assistant, run:
@@ -404,19 +375,20 @@ Press **ALT** to start/stop recording and **ESC** to exit.
 
 The assistant consists of multiple components:
 
-- `voice_assistant`.py: Core script handling voice input/output.
+- `voice_assistant.py`: Core script handling voice input/output.
 - `conversation_history.json`: Stores user interactions.
 - `va.bat`: (For Windows) to run the script in the background
-- `va.sh`: (For Linux/macOS) to run the script in the background
 
-You can customize:
+### Customization Options
 
-- The default AI model (`qwen2.5:7b` in `voice_assistant.py`).
-- The speech synthesis voice (modify `Edge TTS` settings e.g voices).
-- System Prompts (behavior)
-- Notifications
-- Sounds
-- Memory Structure
+- **Whisper Model Size:** Change the model size in `audio_manager.py` (options: tiny, base, small, medium, large).
+- **AI Model:** Change the default AI model in `config.py` (default: `llama3.1`).
+- **Voice Commands:** Customize exit commands in `config.py`.
+- **Audio Settings:** Modify sample rate, channels, and frame duration in `config.py`.
+- **Voice Selection:** Customize TTS voices for different languages in `audio_manager.py`.
+- **System Prompts:** Modify the assistant's behavior and responses in `config.py`.
+- **Notification Settings:** Customize notification settings in `ui_manager.py`.
+
 ---
 
 ## Troubleshooting
@@ -436,4 +408,6 @@ This project is open-source. Contributions, bug fixes, and feature suggestions a
 ---
 
 For any questions refer to `Discord:` `hamzanasry`
+
+---
 

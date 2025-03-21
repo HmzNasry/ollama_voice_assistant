@@ -10,3 +10,7 @@ ollama
 llm_axe
 edge-tts
 warnings
+pyaudio
+tempfile
+subprocess
+wave
