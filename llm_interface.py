@@ -170,7 +170,7 @@ class LLMInterface:
                     None, 
                     lambda: ollama.chat(
                         model=self.ollama_model,
-                        messages=messages,
+                        messages=messages
                     )
                 )
                 
@@ -223,7 +223,8 @@ class LLMInterface:
                 None, 
                 lambda: ollama.chat(
                     model=self.ollama_model,
-                    messages=messages,                )
+                    messages=messages
+                )
             )
             
             # Extract the response text
