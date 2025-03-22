@@ -171,7 +171,6 @@ class LLMInterface:
                     lambda: ollama.chat(
                         model=self.ollama_model,
                         messages=messages,
-                        temperature=0.5  # Lower temperature for factual responses
                     )
                 )
                 
@@ -224,9 +223,7 @@ class LLMInterface:
                 None, 
                 lambda: ollama.chat(
                     model=self.ollama_model,
-                    messages=messages,
-                    temperature=0.7  # Higher temperature for more creative responses
-                )
+                    messages=messages,                )
             )
             
             # Extract the response text
